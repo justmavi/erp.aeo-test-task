@@ -9,7 +9,7 @@ import HttpStatusCode from "http-status-codes";
 import {
   MAX_UPLOAD_FILE_SIZE,
   UPLOAD_FILES_DESTINATION_PATH,
-} from "./constants/file-upload.constants";
+} from "./constants/file.constants";
 import multer from "multer";
 
 const app = express();

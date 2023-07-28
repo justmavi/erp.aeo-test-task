@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 import {
   MAX_UPLOAD_FILE_SIZE,
   UPLOAD_FILES_DESTINATION_PATH,
-} from "../constants/file-upload.constants";
+} from "../constants/file.constants";
 
 const __dirname = path.resolve(path.dirname(""));
 
