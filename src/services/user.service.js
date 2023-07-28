@@ -8,8 +8,8 @@ class UserService {
     const user = await knex(TABLE_USERS).where({ username });
     if (!user) return false;
 
-    const comparingResult = await bcrypt.compare(password, user.password);
-    if (!comparingResult) return false;
+    const matches = await bcrypt.compare(password, user.password);
+    if (!matches) return false;
 
     return true;
   }
