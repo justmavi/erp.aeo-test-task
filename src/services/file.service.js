@@ -14,6 +14,14 @@ class FileService {
 
     return savedFileId;
   }
+
+  async delete(id, userId) {
+    const affected = await knex(TABLE_UPLOADED_FILES)
+      .delete()
+      .where({ id, uploadedUserId: userId });
+
+    return !!affected;
+  }
 }
 
 export const fileService = new FileService();
