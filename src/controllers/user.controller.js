@@ -22,7 +22,7 @@ export const login = async (req, res, next) => {
   res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
 };
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   const model = req.body;
 
   try {
@@ -43,13 +43,8 @@ export const register = async (req, res) => {
   } catch (err) {
     err = wrapError(err);
     if (err instanceof UniqueViolationError)
-      res
-        .status(HttpStatusCodes.CONFLICT)
-        .json(new ConflictError("User already exists"));
-    else
-      res
-        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .json(new InternalServerError());
+      next(new ConflictError("User already exists"));
+    else next(new InternalServerError());
   }
 };
 
