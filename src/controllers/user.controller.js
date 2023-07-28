@@ -1,5 +1,4 @@
 import HttpStatusCodes from "http-status-codes";
-import { NotFoundError } from "../errors/notFound.error";
 import { UnauthorizedError } from "../errors/unauthorized.error";
 import tokenService from "../services/token.service";
 import passwordService from "../services/password.service";

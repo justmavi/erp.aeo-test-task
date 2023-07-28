@@ -1,4 +1,4 @@
-import { TABLE_USERS } from "../../table-names.js";
+import { TABLE_USERS } from "../table-names.js";
 
 /**
  * @param { import("knex").Knex } knex

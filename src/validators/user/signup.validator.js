@@ -1,7 +1,5 @@
-import Joi from "joi";
-import { USER_PASSWORD_MIN_LENGTH } from "../../constants";
+import validate from "../validate.js";
+import { signupValidationSchema } from "./schemas";
 
-export const signupValidationSchema = Joi.object({
-  username: Joi.string().email({ tlds: { allow: false } }),
-  password: Joi.string().min(USER_PASSWORD_MIN_LENGTH),
-});
+export const validateUserSignUp = (req, res, next) =>
+  validate(signupValidationSchema, req, next);
