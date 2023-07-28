@@ -1,2 +1,2 @@
-export * from "./signin.validator.js";
-export * from "./signup.validator.js";
+export * from "./signin.validation-schema.js";
+export * from "./signup.validation-schema.js";

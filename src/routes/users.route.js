@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { userController } from "../controllers";
+import { validateUserSignIn, validateUserSignUp } from "../validators";
 
 const router = Router();
 
-router.get("/signin/new_token");
-router.post("/signin", userController.login);
-router.post("/signup", userController.register);
+router.post("/signin", validateUserSignIn, userController.login);
+router.post("/signup", validateUserSignUp, userController.register);
 router.get("/info", userController.getUserInfo);
+
+export { router as userRouter };
+export default router;

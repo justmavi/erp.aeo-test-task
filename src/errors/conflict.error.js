@@ -1,5 +1,5 @@
-const CustomError = require("./customError.error");
-const { StatusCodes, getReasonPhrase } = require("http-status-codes");
+import { CustomError } from "./customError.error.js";
+import { StatusCodes, getReasonPhrase } from "http-status-codes";
 
 export class ConflictError extends CustomError {
   constructor(message) {
