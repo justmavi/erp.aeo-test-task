@@ -5,7 +5,7 @@ import { USER_PASSWORD_HASH_SALT_ROUNDS } from "../constants";
 
 class UserService {
   async checkExists(username, password) {
-    const user = await knex().where({ username });
+    const user = await knex(TABLE_USERS).where({ username });
     if (!user) return false;
 
     const comparingResult = await bcrypt.compare(password, user.password);
@@ -22,16 +22,12 @@ class UserService {
       USER_PASSWORD_HASH_SALT_ROUNDS
     );
 
-    try {
-      const user = await knex.insert(userModel).into(TABLE_USERS);
-      return user;
-    } catch {
-      return false; // user already exists
-    }
+    const [userId] = await knex(TABLE_USERS).insert(userModel, "id");
+    return userId;
   }
 
   async getById(id) {
-    const [user] = await knex().where({ id });
+    const [user] = await knex(TABLE_USERS).where({ id });
     return user;
   }
 }
