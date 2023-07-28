@@ -5,22 +5,20 @@ import { USER_PASSWORD_HASH_SALT_ROUNDS } from "../constants";
 import passwordService from "./password.service";
 
 class UserService {
-  async getByUsername(username) {
-    const [user] = await knex(TABLE_USERS).where({ username });
-    return user;
-  }
-
   async create(userModel) {
     const { password } = userModel;
     userModel.password = await passwordService.hash(password);
 
-    const [userId] = await knex(TABLE_USERS).insert(userModel);
+    const userId = await knex(TABLE_USERS).insert(userModel).first();
     return userId;
   }
 
-  async getById(id) {
-    const [user] = await knex(TABLE_USERS).where({ id });
-    return user;
+  getById(id) {
+    return knex(TABLE_USERS).where({ id }).first();
+  }
+
+  getByUsername(username) {
+    return knex(TABLE_USERS).where({ username }).first();
   }
 }
 
