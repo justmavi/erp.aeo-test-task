@@ -1,7 +1,7 @@
 import mime from "mime-types";
 import HttpStatusCode from "http-status-codes";
 import fileService from "../services/file.service";
-import { BadRequestError } from "../errors";
+import { BadRequestError, NotFoundError } from "../errors";
 import {
   FILE_LIST_DEFAULT_PAGE_NUMBER,
   FILE_LIST_DEFAULT_SIZE,
@@ -39,11 +39,32 @@ export const getFiles = async (req, res, next) => {
     id: x.fileId,
     name: x.originalname,
     uploadDate: x.updated_at,
+    size: x.size,
     user: {
       id: x.uploadedUserId,
       username: x.username,
     },
   }));
+
+  res.status(HttpStatusCode.OK).json(mappedData);
+};
+
+export const getFileById = async (req, res, next) => {
+  const { id } = req.params;
+
+  const data = await fileService.getById(id);
+  if (!data) return next(new NotFoundError("File not found"));
+
+  const mappedData = {
+    id: data.fileId,
+    name: data.originalname,
+    uploadDate: data.updated_at,
+    size: data.size,
+    user: {
+      id: data.uploadedUserId,
+      username: data.username,
+    },
+  };
 
   res.status(HttpStatusCode.OK).json(mappedData);
 };
