@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs";
 import mime from "mime-types";
 import HttpStatusCode from "http-status-codes";
 import fileService from "../services/file.service";
@@ -5,6 +7,7 @@ import { BadRequestError, NotFoundError } from "../errors";
 import {
   FILE_LIST_DEFAULT_PAGE_NUMBER,
   FILE_LIST_DEFAULT_SIZE,
+  UPLOAD_FILES_DESTINATION_PATH,
 } from "../constants/file.constants";
 
 export const uploadFile = async ({ userId, file }, res, next) => {
@@ -67,4 +70,17 @@ export const getFileById = async (req, res, next) => {
   };
 
   res.status(HttpStatusCode.OK).json(mappedData);
+};
+
+export const downloadFile = async (req, res, next) => {
+  const { id } = req.params;
+
+  const data = await fileService.getById(id);
+  if (!data) return next(new NotFoundError("File not found"));
+
+  const filePath = path.resolve(UPLOAD_FILES_DESTINATION_PATH, data.filename);
+  if (!fs.existsSync(filePath))
+    return next(new NotFoundError("File not found"));
+
+  res.download(filePath, data.originalname);
 };

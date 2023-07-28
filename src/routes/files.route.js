@@ -6,6 +6,7 @@ import {
   validateDeleteFile,
   validateGetFiles,
   validateGetFile,
+  validateDownloadFile,
 } from "../validators";
 
 const router = Router();
@@ -16,6 +17,7 @@ router.post("/", multer().single("file"), fileController.uploadFile);
 router.delete("/:id", validateDeleteFile, fileController.deleteFile);
 router.get("/", validateGetFiles, fileController.getFiles);
 router.get("/:id", validateGetFile, fileController.getFileById);
+router.post("/download/:id", validateDownloadFile, fileController.downloadFile);
 
 export { router as fileRouter };
 export default router;
