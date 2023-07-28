@@ -15,7 +15,32 @@ export const login = async (req, res) => {
   if (!matches) throw new UnauthorizedError("Incorrect login or password");
 
   const jwtToken = tokenService.generateJwt(user.id);
-  const refreshToken = tokenService.generateRefresh();
+  const refreshToken = tokenService.generateRefresh(user.id);
 
   return res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
+};
+
+export const register = async (req, res) => {
+  const model = req.body;
+
+  const createdUserId = await userService.create(model);
+
+  const jwtToken = tokenService.generateJwt(createdUserId);
+  const refreshToken = tokenService.generateRefresh(createdUserId);
+
+  const responseObject = {
+    user: { id: createdUserId, ...model },
+    tokens: {
+      jwt: jwtToken,
+      refresh: refreshToken,
+    },
+  };
+
+  return res.status(HttpStatusCodes.CREATED).json(responseObject);
+};
+
+export const getUserInfo = async ({ userId }, res) => {
+  const user = await userService.getById(userId);
+
+  return res.status(HttpStatusCodes.OK).json(user);
 };
