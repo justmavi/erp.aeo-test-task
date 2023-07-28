@@ -18,6 +18,6 @@ export default {
   propagateCreateError: false,
   acquireConnectionTimeout: process.env.DB_CONN_TIMEOUT,
   migrations: {
-    directory: `./database/migrations`,
+    directory: `./migrations`,
   },
 };
