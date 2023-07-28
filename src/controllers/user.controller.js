@@ -3,6 +3,8 @@ import { UnauthorizedError } from "../errors/unauthorized.error";
 import tokenService from "../services/token.service";
 import passwordService from "../services/password.service";
 import userService from "../services/user.service";
+import { UniqueViolationError, wrapError } from "db-errors";
+import { ConflictError, InternalServerError } from "../errors";
 
 export const login = async (req, res, next) => {
   const { username, password } = req.body;
@@ -17,30 +19,42 @@ export const login = async (req, res, next) => {
   const jwtToken = tokenService.generateJwt(user.id);
   const refreshToken = tokenService.generateRefresh(user.id);
 
-  return res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
+  res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
 };
 
 export const register = async (req, res) => {
   const model = req.body;
 
-  const createdUserId = await userService.create(model);
+  try {
+    const createdUserId = await userService.create(model);
 
-  const jwtToken = tokenService.generateJwt(createdUserId);
-  const refreshToken = tokenService.generateRefresh(createdUserId);
+    const jwtToken = tokenService.generateJwt(createdUserId);
+    const refreshToken = tokenService.generateRefresh(createdUserId);
 
-  const responseObject = {
-    user: { id: createdUserId, ...model },
-    tokens: {
-      jwt: jwtToken,
-      refresh: refreshToken,
-    },
-  };
+    const responseObject = {
+      user: { id: createdUserId, ...model },
+      tokens: {
+        jwt: jwtToken,
+        refresh: refreshToken,
+      },
+    };
 
-  return res.status(HttpStatusCodes.CREATED).json(responseObject);
+    res.status(HttpStatusCodes.CREATED).json(responseObject);
+  } catch (err) {
+    err = wrapError(err);
+    if (err instanceof UniqueViolationError)
+      res
+        .status(HttpStatusCodes.CONFLICT)
+        .json(new ConflictError("User already exists"));
+    else
+      res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .json(new InternalServerError());
+  }
 };
 
 export const getUserInfo = async ({ userId }, res) => {
   const user = await userService.getById(userId);
 
-  return res.status(HttpStatusCodes.OK).json(user);
+  res.status(HttpStatusCodes.OK).json(user);
 };

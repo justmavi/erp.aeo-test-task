@@ -14,7 +14,7 @@ class UserService {
     const { password } = userModel;
     userModel.password = await passwordService.hash(password);
 
-    const [userId] = await knex(TABLE_USERS).insert(userModel, "id");
+    const [userId] = await knex(TABLE_USERS).insert(userModel);
     return userId;
   }
 
