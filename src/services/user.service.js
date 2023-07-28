@@ -2,25 +2,17 @@ import bcrypt from "bcrypt";
 import knex from "../knex";
 import { TABLE_USERS } from "../knex/table-names";
 import { USER_PASSWORD_HASH_SALT_ROUNDS } from "../constants";
+import passwordService from "./password.service";
 
 class UserService {
-  async checkExists(username, password) {
-    const user = await knex(TABLE_USERS).where({ username });
-    if (!user) return false;
-
-    const matches = await bcrypt.compare(password, user.password);
-    if (!matches) return false;
-
-    return true;
+  async getByUsername(username) {
+    const [user] = await knex(TABLE_USERS).where({ username });
+    return user;
   }
 
   async create(userModel) {
     const { password } = userModel;
-
-    userModel.password = await bcrypt.hash(
-      password,
-      USER_PASSWORD_HASH_SALT_ROUNDS
-    );
+    userModel.password = await passwordService.hash(password);
 
     const [userId] = await knex(TABLE_USERS).insert(userModel, "id");
     return userId;
@@ -32,4 +24,5 @@ class UserService {
   }
 }
 
-export default new UserService();
+export const userService = new UserService();
+export default userService;
