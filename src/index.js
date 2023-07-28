@@ -1,12 +1,16 @@
 import fs from "fs";
 import { mkdirp } from "mkdirp";
 import express from "express";
-import { userRouter } from "./routes";
+import { fileRouter, userRouter } from "./routes";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { CustomError, InternalServerError } from "./errors";
+import { BadRequestError, CustomError, InternalServerError } from "./errors";
 import HttpStatusCode from "http-status-codes";
-import { UPLOAD_FILES_DESTINATION_PATH } from "./constants/file-upload.constants";
+import {
+  MAX_UPLOAD_FILE_SIZE,
+  UPLOAD_FILES_DESTINATION_PATH,
+} from "./constants/file-upload.constants";
+import multer from "multer";
 
 const app = express();
 
@@ -15,11 +19,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/user", userRouter);
+app.use("/file", fileRouter);
 
 app.use((err, req, res, next) => {
   if (err instanceof CustomError) {
     res.status(err.status).json(err);
+  } else if (err instanceof multer.MulterError) {
+    res
+      .status(HttpStatusCode.BAD_REQUEST)
+      .json(
+        new BadRequestError(
+          `File too large. Max: ${MAX_UPLOAD_FILE_SIZE / 1048576}MB`
+        )
+      );
   } else {
+    console.log("An unhandled exception occured while handling request", err);
     res
       .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
       .json(new InternalServerError());

@@ -6,7 +6,7 @@ export const uploadFile = async ({ userId, file }, res, next) => {
   const ext = mime.extension(file.mimetype);
 
   try {
-    const id = await fileService.save(file, userId);
+    const id = await fileService.save({ extension: ext, ...file }, userId);
 
     res.status(HttpStatusCode.CREATED).json({ id });
   } catch (err) {

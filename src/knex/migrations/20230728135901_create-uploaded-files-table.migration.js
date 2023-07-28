@@ -1,4 +1,4 @@
-import { TABLE_UPLOADED_FILES, TABLE_USERS } from "../table-names";
+import { TABLE_UPLOADED_FILES, TABLE_USERS } from "../table-names.js";
 
 /**
  * @param { import("knex").Knex } knex
@@ -18,7 +18,7 @@ export function up(knex) {
       .references("id")
       .inTable(TABLE_USERS)
       .nullable();
-    table.timestamps();
+    table.timestamps(true, true);
   });
 }
 

@@ -1,7 +1,5 @@
-import bcrypt from "bcrypt";
 import knex from "../knex";
 import { TABLE_USERS } from "../knex/table-names";
-import { USER_PASSWORD_HASH_SALT_ROUNDS } from "../constants";
 import passwordService from "./password.service";
 
 class UserService {
@@ -9,7 +7,7 @@ class UserService {
     const { password } = userModel;
     userModel.password = await passwordService.hash(password);
 
-    const userId = await knex(TABLE_USERS).insert(userModel).first();
+    const [userId] = await knex(TABLE_USERS).insert(userModel);
     return userId;
   }
 

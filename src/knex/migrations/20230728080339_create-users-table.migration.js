@@ -9,6 +9,7 @@ export function up(knex) {
     table.increments("id");
     table.string("username").unique().notNullable();
     table.string("password").notNullable();
+    table.timestamps(true);
   });
 }
 
