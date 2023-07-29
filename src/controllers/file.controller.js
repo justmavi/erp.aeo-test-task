@@ -1,21 +1,19 @@
-import path from "path";
-import fs from "fs";
-import mime from "mime-types";
+import fs, { promises as promisesFs } from "fs";
 import HttpStatusCode from "http-status-codes";
-import fileService from "../services/file.service";
-import { BadRequestError, NotFoundError } from "../errors";
+import path from "path";
 import {
   FILE_LIST_DEFAULT_PAGE_NUMBER,
   FILE_LIST_DEFAULT_SIZE,
   UPLOAD_FILES_DESTINATION_PATH,
 } from "../constants/file.constants";
+import { BadRequestError, NotFoundError } from "../errors";
+import fileService from "../services/file.service";
 
-export const uploadFile = async ({ userId, file }, res, next) => {
-  const ext = mime.extension(file.mimetype);
+export const uploadFile = async (req, res, next) => {
+  const { userId, file } = req;
 
   try {
-    const id = await fileService.save({ extension: ext, ...file }, userId);
-
+    const id = await fileService.save(file, userId);
     res.status(HttpStatusCode.CREATED).json({ id });
   } catch (err) {
     next(err);
@@ -75,12 +73,30 @@ export const getFileById = async (req, res, next) => {
 export const downloadFile = async (req, res, next) => {
   const { id } = req.params;
 
-  const data = await fileService.getById(id);
-  if (!data) return next(new NotFoundError("File not found"));
+  try {
+    const data = await fileService.getById(id);
+    if (!data) return next(new NotFoundError("File not found"));
 
-  const filePath = path.resolve(UPLOAD_FILES_DESTINATION_PATH, data.filename);
-  if (!fs.existsSync(filePath))
-    return next(new NotFoundError("File not found"));
+    const filePath = path.resolve(UPLOAD_FILES_DESTINATION_PATH, data.filename);
+    if (!fs.existsSync(filePath))
+      return next(new NotFoundError("File not found"));
 
-  res.download(filePath, data.originalname);
+    res.download(filePath, data.originalname);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateFile = async (req, res, next) => {
+  const { id } = req.params;
+  const { file, userId } = req;
+
+  try {
+    const success = await fileService.update(id, file, userId);
+    if (!success) return next(new BadRequestError("File not found"));
+
+    res.status(HttpStatusCode.OK).json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
 };
