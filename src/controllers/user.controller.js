@@ -7,19 +7,27 @@ import { UniqueViolationError, wrapError } from "db-errors";
 import { ConflictError, InternalServerError, NotFoundError } from "../errors";
 
 export const login = async (req, res, next) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  const user = await userService.getByUsername(username);
-  if (!user) return next(new UnauthorizedError("Incorrect login or password"));
+    const user = await userService.getByUsername(username);
+    if (!user)
+      return next(new UnauthorizedError("Incorrect login or password"));
 
-  const matches = await passwordService.checkMatching(user.password, password);
-  if (!matches)
-    return next(new UnauthorizedError("Incorrect login or password"));
+    const matches = await passwordService.checkMatching(
+      user.password,
+      password
+    );
+    if (!matches)
+      return next(new UnauthorizedError("Incorrect login or password"));
 
-  const jwtToken = tokenService.generateJwt(user.id);
-  const refreshToken = await tokenService.generateRefresh(user.id);
+    const jwtToken = tokenService.generateJwt(user.id);
+    const refreshToken = await tokenService.generateRefresh(user.id);
 
-  res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
+    res.status(HttpStatusCodes.OK).json({ jwtToken, refreshToken });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const register = async (req, res, next) => {
@@ -49,20 +57,28 @@ export const register = async (req, res, next) => {
 };
 
 export const getUserInfo = async ({ userId }, res) => {
-  const { id, username } = await userService.getById(userId);
-  res.status(HttpStatusCodes.OK).json({ id, username });
+  try {
+    const { id, username } = await userService.getById(userId);
+    res.status(HttpStatusCodes.OK).json({ id, username });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const updateJwtToken = async (req, res, next) => {
-  const { refreshToken } = req.body;
-  const userId = await tokenService.getRefreshTokenOwner(refreshToken);
+  try {
+    const { refreshToken } = req.body;
+    const userId = await tokenService.getRefreshTokenOwner(refreshToken);
 
-  if (!userId)
-    return next(new NotFoundError("Refresh token not found or expired"));
+    if (!userId)
+      return next(new NotFoundError("Refresh token not found or expired"));
 
-  const newJwt = tokenService.generateJwt(userId);
+    const newJwt = tokenService.generateJwt(userId);
 
-  res.status(HttpStatusCodes.OK).json({ newJwt });
+    res.status(HttpStatusCodes.OK).json({ newJwt });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const logout = async (req, res, next) => {
