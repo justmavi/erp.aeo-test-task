@@ -37,7 +37,7 @@ export const register = async (req, res, next) => {
     const createdUserId = await userService.create(model);
 
     const jwtToken = tokenService.generateJwt(createdUserId);
-    const refreshToken = tokenService.generateRefresh(createdUserId);
+    const refreshToken = await tokenService.generateRefresh(createdUserId);
 
     const responseObject = {
       user: { id: createdUserId, ...model },

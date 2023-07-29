@@ -1,0 +1,76 @@
+version: "3.2"
+services:
+  backend:
+    container_name: erp-aeo-test-task-backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - HTTP_PORT=$HTTP_PORT
+      - DB_CLIENT=$DB_CLIENT
+      - DB_NAME=$DB_NAME
+      - DB_HOST=$DB_HOST
+      - DB_PORT=$DB_PORT
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_CONN_POLL_MIN=$DB_CONN_POLL_MIN
+      - DB_CONN_POLL_MAX=$DB_CONN_POLL_MAX
+      - DB_CONN_TIMEOUT=$DB_CONN_TIMEOUT
+      - REDIS_NAME=$REDIS_NAME
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - REDIS_DB=$REDIS_DB
+      - JWT_SECRET=$JWT_SECRET
+      - UPLOAD_FILES_DESTINATION_PATH=$UPLOAD_FILES_DESTINATION_PATH
+    ports:
+      - $HTTP_PORT:$HTTP_PORT
+    restart: always
+    links:
+      - mysql
+      - redis
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      main:
+        aliases:
+          - backend
+  mysql:
+    image: "mysql"
+    hostname: mysql
+    container_name: erp-aeo-test-task-mysql
+    volumes:
+      - data_container:/data/mysql
+    ports:
+      - $DB_PORT:$DB_PORT
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_USER
+      - MYSQL_PASSWORD=$DB_PASSWORD
+    restart: always
+    networks:
+      main:
+        aliases:
+          - mysql
+  redis:
+    image: "redis"
+    hostname: redis
+    container_name: erp-aeo-test-task-redis
+    volumes:
+      - data_container:/data/redis
+    ports:
+      - $REDIS_PORT:$REDIS_PORT
+    restart: always
+    networks:
+      main:
+        aliases:
+          - redis
+volumes:
+  data_container:
+networks:
+  main:

@@ -11,6 +11,7 @@ import {
   UPLOAD_FILES_DESTINATION_PATH,
 } from "./constants/file.constants";
 import multer from "multer";
+import runDbMigrations from "./knex/migrator.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use((err, req, res, next) => {
 
 app.listen(process.env.HTTP_PORT, () => {
   console.log("App is ready. Listening port", process.env.HTTP_PORT);
+  runDbMigrations();
 });
 
 if (!fs.existsSync(UPLOAD_FILES_DESTINATION_PATH)) {

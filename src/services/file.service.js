@@ -130,12 +130,6 @@ class FileService {
 
     return data;
   }
-
-  // async update(id, newFile) {
-  //   const trx = await knex.transaction();
-
-  //   trx.update({})
-  // }
 }
 
 export const fileService = new FileService();
