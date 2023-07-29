@@ -74,6 +74,7 @@ class FileService {
           extension,
           mime: mimetype,
           size,
+          updated_at: new Date(),
         })
         .where({ id: fileId, uploadedUserId: userId });
 
