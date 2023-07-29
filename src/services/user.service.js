@@ -11,12 +11,14 @@ class UserService {
     return userId;
   }
 
-  getById(id) {
-    return knex(TABLE_USERS).where({ id }).first();
+  async getById(id) {
+    const user = await knex(TABLE_USERS).where({ id }).first();
+    return user;
   }
 
-  getByUsername(username) {
-    return knex(TABLE_USERS).where({ username }).first();
+  async getByUsername(username) {
+    const user = await knex(TABLE_USERS).where({ username }).first();
+    return user;
   }
 }
 

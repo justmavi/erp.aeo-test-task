@@ -35,11 +35,13 @@ class TokenService {
     return token;
   }
 
-  getUserActiveRefreshToken(userId) {
-    return knex(TABLE_REFRESH_TOKENS)
+  async getUserActiveRefreshToken(userId) {
+    const data = await knex(TABLE_REFRESH_TOKENS)
       .where({ userId })
       .andWhere("expiresIn", ">=", new Date())
       .first();
+
+    return data;
   }
 
   parseJwt(token) {
