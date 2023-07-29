@@ -10,8 +10,10 @@ import HttpStatusCode from "http-status-codes";
 
 class FileService {
   /**
-   * @param { import("knex").Knex.Transaction } trx
-   * @returns { Promise<number> }
+   *  First we save the file in memory (not on disk).
+   *  Next, we open the transaction and try to insert the record into the database, while not committing it
+   *  If the record was inserted successfully, we save the file to disk and commit the transaction, otherwise we return an error to the client.
+   *  If something goes wrong when writing a file to disk, we simply roll back the transaction changes and return the error to the client.
    */
   async save({ originalname, mimetype, size, buffer }, userId) {
     const trx = await knex.transaction();
@@ -49,9 +51,8 @@ class FileService {
     }
   }
 
-  /**
-   * @param { import("knex").Knex.Transaction } trx
-   * @returns { Promise<void> }
+  /*
+   * We do the same as when saving, just update here instead of inserting
    */
   async update(fileId, { originalname, mimetype, size, buffer }, userId) {
     const trx = await knex.transaction();
