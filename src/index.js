@@ -51,3 +51,8 @@ if (!fs.existsSync(UPLOAD_FILES_DESTINATION_PATH)) {
       console.log("Cannot automatically create folder for uploaded files", err)
     );
 }
+
+process.on("uncaughtException", (err) => {
+  console.error("[CRITICAL] An unhandled critical error occured", err);
+  process.stdin.resume();
+});

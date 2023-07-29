@@ -1,4 +1,4 @@
-import fs, { promises as promisesFs } from "fs";
+import fs from "fs";
 import HttpStatusCode from "http-status-codes";
 import path from "path";
 import {
