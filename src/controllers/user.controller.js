@@ -12,7 +12,7 @@ export const login = async (req, res, next) => {
   const user = await userService.getByUsername(username);
   if (!user) return next(new UnauthorizedError("Incorrect login or password"));
 
-  const matches = passwordService.checkMatching(user.password, password);
+  const matches = await passwordService.checkMatching(user.password, password);
   if (!matches)
     return next(new UnauthorizedError("Incorrect login or password"));
 
@@ -68,11 +68,14 @@ export const updateJwtToken = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    await tokenService.invalidateToken(token);
+
+    await Promise.all([
+      tokenService.invalidateJwtToken(token),
+      tokenService.invalidateUserRefreshToken(req.userId),
+    ]);
 
     res.status(HttpStatusCodes.OK).json({ ok: true });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };

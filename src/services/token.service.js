@@ -17,10 +17,7 @@ class TokenService {
 
   async generateRefresh(forUserId) {
     const activeRefreshToken = await this.getUserActiveRefreshToken(forUserId);
-    if (activeRefreshToken) {
-      console.log(activeRefreshToken);
-      return activeRefreshToken.token;
-    }
+    if (activeRefreshToken) return activeRefreshToken.token;
 
     const token = v4();
     const date = new Date();
@@ -57,10 +54,19 @@ class TokenService {
     return data?.userId;
   }
 
-  async invalidateToken(token) {
+  async invalidateJwtToken(token) {
     const decodedToken = jwt.decode(token);
     const timeLeft = decodedToken.exp - Math.floor(Date.now() / 1000);
     await redisService.set(token, true, "EX", timeLeft);
+  }
+
+  async invalidateUserRefreshToken(userId) {
+    const affected = await knex(TABLE_REFRESH_TOKENS)
+      .update({ expiresIn: new Date() })
+      .where({ userId })
+      .andWhere("expiresIn", ">", new Date());
+
+    return !!affected;
   }
 }
 
