@@ -14,7 +14,6 @@ export function up(knex) {
       .references("id")
       .inTable(TABLE_USERS)
       .notNullable();
-    table.timestamps(true);
     table.timestamp("expiresIn").notNullable();
   });
 }
