@@ -1,451 +1,395 @@
 {
-	"info": {
-		"_postman_id": "1fdae3cc-788e-452a-8437-64867265d011",
-		"name": "erp.aero-test-task",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23807384"
-	},
-	"item": [
-		{
-			"name": "user",
-			"item": [
-				{
-					"name": "Sign In",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response.json();\r",
-									"\r",
-									"if (!response) {\r",
-									"    throw new Error('No response');\r",
-									"} \r",
-									"\r",
-									"const { jwtToken, refreshToken } = response;\r",
-									"\r",
-									"if (!jwtToken) {\r",
-									"    throw new Error('No jwt or refresh token');  \r",
-									"} \r",
-									"\r",
-									"pm.environment.set('JWT_TOKEN', jwtToken);\r",
-									"pm.environment.set('REFRESH_TOKEN', refreshToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mail@mail.ru\",\r\n    \"password\": \"qwerty123\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_URL}}/user/signin",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"user",
-								"signin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign Up",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response.json();\r",
-									"\r",
-									"if (!response) {\r",
-									"    throw new Error('No response');\r",
-									"} \r",
-									"\r",
-									"const { tokens } = response;\r",
-									"\r",
-									"if (!tokens) {\r",
-									"    throw new Error('No tokens');  \r",
-									"} \r",
-									"\r",
-									"pm.environment.set('JWT_TOKEN', tokens.jwt);\r",
-									"pm.environment.set('REFRESH_TOKEN', tokens.refresh);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mail@mail.ru\",\r\n    \"password\": \"qwerty123\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_URL}}/user/signup",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"user",
-								"signup"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Info",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/user/info",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"user",
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update JWT",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response.json();\r",
-									"\r",
-									"if (!response) {\r",
-									"    throw new Error('No response');\r",
-									"} \r",
-									"\r",
-									"const { newJwt } = response;\r",
-									"\r",
-									"if (!newJwt) {\r",
-									"    throw new Error('No jwt or refresh token');  \r",
-									"} \r",
-									"\r",
-									"pm.environment.set('JWT_TOKEN', newJwt);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"refreshToken\": \"{{REFRESH_TOKEN}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_URL}}/user/signin/new_token",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"user",
-								"signin",
-								"new_token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign Out",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/user/logout",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"user",
-								"logout"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "file",
-			"item": [
-				{
-					"name": "Get all",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/file?listSize=10&page=1",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "listSize",
-									"value": "10"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get by Id",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/file/:id",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Upload",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/Grish/Documents/download.jpeg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API_URL}}/file/",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Download",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/file/download/:id",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file",
-								"download",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{API_URL}}/file/:id",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/Grish/Documents/Grish Poghosyan CV_compressed.pdf"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API_URL}}/file/:id",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"file",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "1fdae3cc-788e-452a-8437-64867265d011",
+    "name": "Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23807384"
+  },
+  "item": [
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "Sign In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (!response) {\r",
+                  "    throw new Error('No response');\r",
+                  "} \r",
+                  "\r",
+                  "const { jwtToken, refreshToken } = response;\r",
+                  "\r",
+                  "if (!jwtToken) {\r",
+                  "    throw new Error('No jwt or refresh token');  \r",
+                  "} \r",
+                  "\r",
+                  "pm.environment.set('JWT_TOKEN', jwtToken);\r",
+                  "pm.environment.set('REFRESH_TOKEN', refreshToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"mail@mail.ru\",\r\n    \"password\": \"qwerty123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_URL}}/user/signin",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "signin"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (!response) {\r",
+                  "    throw new Error('No response');\r",
+                  "} \r",
+                  "\r",
+                  "const { tokens } = response;\r",
+                  "\r",
+                  "if (!tokens) {\r",
+                  "    throw new Error('No tokens');  \r",
+                  "} \r",
+                  "\r",
+                  "pm.environment.set('JWT_TOKEN', tokens.jwt);\r",
+                  "pm.environment.set('REFRESH_TOKEN', tokens.refresh);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"mail@mail.ru\",\r\n    \"password\": \"qwerty123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_URL}}/user/signup",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Info",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/user/info",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "info"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "if (!response) {\r",
+                  "    throw new Error('No response');\r",
+                  "} \r",
+                  "\r",
+                  "const { newJwt } = response;\r",
+                  "\r",
+                  "if (!newJwt) {\r",
+                  "    throw new Error('No jwt or refresh token');  \r",
+                  "} \r",
+                  "\r",
+                  "pm.environment.set('JWT_TOKEN', newJwt);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"{{REFRESH_TOKEN}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_URL}}/user/signin/new_token",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "signin", "new_token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/user/logout",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "file",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/file?listSize=10&page=1",
+              "host": ["{{API_URL}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "listSize",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/file/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["file", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/Grish/Documents/download.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API_URL}}/file/",
+              "host": ["{{API_URL}}"],
+              "path": ["file", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/file/download/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["file", "download", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/file/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["file", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{JWT_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/Grish/Documents/Grish Poghosyan CV_compressed.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{API_URL}}/file/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["file", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

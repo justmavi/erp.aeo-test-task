@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   backend:
-    container_name: erp-aeo-test-task-backend
+    container_name: backend
     build:
       context: ./
       dockerfile: Dockerfile
@@ -42,7 +42,7 @@ services:
   mysql:
     image: "mysql"
     hostname: mysql
-    container_name: erp-aeo-test-task-mysql
+    container_name: mysql
     volumes:
       - data_container:/data/mysql
     ports:
@@ -60,7 +60,7 @@ services:
   redis:
     image: "redis"
     hostname: redis
-    container_name: erp-aeo-test-task-redis
+    container_name: redis
     volumes:
       - data_container:/data/redis
     ports:
